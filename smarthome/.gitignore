@@ -1,0 +1,16 @@
+# Runtime state
+n8n_data/database.sqlite
+n8n_data/database.sqlite-*
+n8n_data/*.log
+n8n_data/crash.journal
+.env
+
+# MQTT secrets
+mosquitto/config/passwords
+
+# Frigate state/artifacts
+frigate_config/frigate.db*
+frigate_config/*.db*
+
+# Backup artifacts
+backups/

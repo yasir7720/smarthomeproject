@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>BulutSistem — Sıradan Kullanıcı Rehberi</title>
+  <style>
+    @page { size: A4; margin: 18mm 16mm 22mm 16mm; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", "DejaVu Sans", Arial, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.55;
+      color: #1a1a1a;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      font-size: 22pt;
+      color: #0d3b66;
+      border-bottom: 3px solid #0d3b66;
+      padding-bottom: 8px;
+      margin-top: 0;
+      page-break-after: avoid;
+    }
+    h2 {
+      font-size: 14pt;
+      color: #14532d;
+      margin-top: 22px;
+      border-bottom: 1px solid #cbd5e1;
+      padding-bottom: 4px;
+      page-break-after: avoid;
+    }
+    h3 {
+      font-size: 11pt;
+      color: #1e40af;
+      margin-top: 14px;
+      page-break-after: avoid;
+    }
+    p { margin: 8px 0; text-align: justify; }
+    ul, ol { margin: 8px 0; padding-left: 24px; }
+    li { margin: 5px 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 9.5pt;
+      page-break-inside: avoid;
+    }
+    th, td {
+      border: 1px solid #94a3b8;
+      padding: 7px 9px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: #e2e8f0; font-weight: 700; }
+    tr:nth-child(even) td { background: #f8fafc; }
+    pre, code {
+      font-family: Consolas, "DejaVu Sans Mono", monospace;
+      font-size: 9pt;
+    }
+    pre {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 10px 12px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      page-break-inside: avoid;
+    }
+    .meta {
+      background: #eff6ff;
+      border: 1px solid #93c5fd;
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin: 14px 0;
+      font-size: 9.5pt;
+    }
+    .step {
+      background: #f0fdf4;
+      border-left: 4px solid #22c55e;
+      padding: 10px 14px;
+      margin: 14px 0;
+      page-break-inside: avoid;
+    }
+    .step-num {
+      font-weight: 700;
+      color: #14532d;
+      font-size: 11pt;
+    }
+    .warn {
+      background: #fef2f2;
+      border-left: 4px solid #ef4444;
+      padding: 10px 14px;
+      margin: 12px 0;
+      page-break-inside: avoid;
+    }
+    .tip {
+      background: #fef9c3;
+      border-left: 4px solid #eab308;
+      padding: 10px 14px;
+      margin: 12px 0;
+      page-break-inside: avoid;
+    }
+    .checklist { list-style: none; padding-left: 0; }
+    .checklist li::before { content: "☐ "; font-weight: bold; }
+    .page-break { page-break-before: always; }
+    .footer-note {
+      margin-top: 24px;
+      padding-top: 10px;
+      border-top: 1px solid #cbd5e1;
+      font-size: 8.5pt;
+      color: #64748b;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<h1>BulutSistem — Sıradan Kullanıcı Rehberi</h1>
+
+<div class="meta">
+  <strong>Proje:</strong> BulutSistem (Akıllı Ev + Güvenlik Kamerası)<br>
+  <strong>Konum:</strong> /home/yasir/görüntüproje/bulutsıstem/<br>
+  <strong>Kim için:</strong> Sistemi ilk kez kuran ve günlük kullanacak kişi<br>
+  <strong>Tarih:</strong> 12 Haziran 2026
+</div>
+
+<p>
+  Bu rehber, BulutSistem'i <strong>sıradan bir kullanıcı</strong> gibi sıfırdan kurup kullanmanız için hazırlanmıştır.
+  Teknik bilgi gerekmez; adımları sırayla takip etmeniz yeterlidir.
+</p>
+
+<h2>Ne yapacaksınız?</h2>
+<ul>
+  <li>Hesap açacaksınız</li>
+  <li>Telefon kamerasını sisteme bağlayacaksınız</li>
+  <li>Canlı görüntü izleyeceksiniz</li>
+  <li>Kişi algılanınca alarm çalacak</li>
+  <li>Ev cihazlarını (lamba, priz vb.) kontrol edeceksiniz</li>
+</ul>
+
+<div class="warn">
+  <strong>Önemli:</strong> HYDRA (smarthome/komuta_merkezi) ile BulutSistem aynı anda tam açılmamalıdır.
+  İkisi de Frigate için <strong>5000</strong> portunu kullanır. Günlük kullanımda sadece BulutSistem'i çalıştırın.
+</div>
+
+<h2>Bölüm A — Ön Hazırlık</h2>
+
+<div class="step">
+  <div class="step-num">Adım 0 — Gereksinimler</div>
+  <ul>
+    <li>Bir Linux PC (sistemin çalışacağı bilgisayar)</li>
+    <li>Docker ve Docker Compose kurulu</li>
+    <li>Flutter SDK (mobil uygulama için)</li>
+    <li>Android telefon veya emülatör</li>
+    <li>Telefonda <strong>IP Webcam</strong> uygulaması (ücretsiz)</li>
+    <li>Telefon ve PC <strong>aynı WiFi</strong> ağında</li>
+  </ul>
+</div>
+
+<h2>Bölüm B — Sistemi Başlatma (PC)</h2>
+
+<div class="step">
+  <div class="step-num">Adım 1 — BulutSistem'i ayağa kaldırın</div>
+  <p>Terminal açın ve şu komutları çalıştırın:</p>
+  <pre>cd /home/yasir/görüntüproje/bulutsıstem
+docker-compose up -d --build</pre>
+  <p>İlk seferde 2–5 dakika sürebilir. Bittikten sonra kontrol edin:</p>
+  <pre>curl http://localhost:8000/health</pre>
+  <p>Şunu görmelisiniz: <code>"status": "ok"</code></p>
+</div>
+
+<div class="step">
+  <div class="step-num">Adım 2 — Çalışan servisleri doğrulayın</div>
+  <table>
+    <tr><th>Servis</th><th>Adres</th><th>Ne işe yarar?</th></tr>
+    <tr><td>API</td><td>http://localhost:8000/docs</td><td>Tüm işlemler (Swagger arayüzü)</td></tr>
+    <tr><td>Veritabanı</td><td>http://localhost:8085</td><td>Adminer — verileri görme</td></tr>
+    <tr><td>Frigate</td><td>http://localhost:5000</td><td>AI kamera / kişi algılama</td></tr>
+    <tr><td>go2rtc</td><td>http://localhost:1984</td><td>Canlı yayın yönetimi</td></tr>
+  </table>
+</div>
+
+<div class="step">
+  <div class="step-num">Adım 3 — PC'nizin yerel IP adresini öğrenin</div>
+  <pre>hostname -I</pre>
+  <p>Çıkan ilk adresi not alın (örnek: <code>192.168.1.10</code> veya <code>10.80.15.57</code>).</p>
+  <p>Bu IP'yi mobil uygulamada <strong>API adresi</strong> ve <strong>MQTT Host</strong> için kullanacaksınız.</p>
+</div>
+
+<div class="page-break"></div>
+
+<h2>Bölüm C — Hesap Açma</h2>
+
+<p>İki yol var. Mobil uygulama önerilir.</p>
+
+<div class="step">
+  <div class="step-num">Adım 4 — Mobil uygulamayı başlatın</div>
+  <pre>cd /home/yasir/görüntüproje/bulutsıstem/mobile
+flutter pub get
+flutter run</pre>
+  <p>Telefon bağlıysa telefonda, yoksa Chrome'da açılır:</p>
+  <pre>flutter run -d chrome</pre>
+</div>
+
+<div class="step">
+  <div class="step-num">Adım 5 — API adresini ayarlayın</div>
+  <table>
+    <tr><th>Nereden bağlanıyorsunuz?</th><th>API adresi</th></tr>
+    <tr><td>PC'de Chrome</td><td><code>http://localhost:8000</code></td></tr>
+    <tr><td>Android emülatör</td><td><code>http://10.0.2.2:8000</code></td></tr>
+    <tr><td>Gerçek telefon (aynı WiFi)</td><td><code>http://PC_IP:8000</code> (ör. http://192.168.1.10:8000)</td></tr>
+  </table>
+</div>
+
+<div class="step">
+  <div class="step-num">Adım 6 — Kayıt olun</div>
+  <ol>
+    <li>Uygulamada <strong>Kayıt Ol</strong> sekmesine geçin</li>
+    <li>E-posta girin (ör. <code>benim@email.com</code>)</li>
+    <li>Şifre: en az 8 karakter</li>
+    <li>Ad soyad girin</li>
+    <li>Ev adı girin (ör. <code>Benim Evim</code>)</li>
+    <li><strong>Kayıt Ol</strong> butonuna basın</li>
+  </ol>
+  <p>Kayıt olunca otomatik giriş yapılır ve size özel bir <strong>ev (tenant)</strong> oluşturulur.</p>
+  <p>Arka planda şunlar otomatik olur:</p>
+  <ul>
+    <li>4 varsayılan cihaz eklenir (salon lamba, TV priz, yatak odası lamba, mutfak priz)</li>
+    <li>MQTT kullanıcı adı ve şifreniz oluşturulur</li>
+    <li>Edge agent anahtarınız üretilir</li>
+  </ul>
+</div>
+
+<div class="tip">
+  <strong>Alternatif — Tarayıcıdan kayıt:</strong> http://localhost:8000/docs adresinde
+  <code>POST /api/v1/auth/register</code> endpoint'ini kullanabilirsiniz.
+</div>
+
+<div class="page-break"></div>
+
+<h2>Bölüm D — Telefon Kamerasını Bağlama</h2>
+
+<div class="step">
+  <div class="step-num">Adım 7 — IP Webcam uygulamasını hazırlayın</div>
+  <ol>
+    <li>Telefona <strong>IP Webcam</strong> uygulamasını kurun</li>
+    <li>Uygulamayı açın → <strong>Sunucuyu başlat</strong></li>
+    <li>Ekranda görünen IP adresini not alın (ör. <code>192.168.1.105:8080</code>)</li>
+    <li>Telefon ve PC aynı WiFi'de olmalı</li>
+  </ol>
+  <p>Test: PC tarayıcısında şunu açın:</p>
+  <pre>http://TELEFON_IP:8080/video</pre>
+  <p>Canlı görüntü geliyorsa kamera hazır.</p>
+</div>
+
+<div class="step">
+  <div class="step-num">Adım 8 — Kamerayı BulutSistem'e ekleyin</div>
+  <p>Mobil uygulamada Dashboard ekranında:</p>
+  <ol>
+    <li><strong>IP Webcam Ekle</strong> bölümüne gidin</li>
+    <li>Telefon IP'sini yazın (ör. <code>192.168.1.105</code>)</li>
+    <li>Port: <code>8080</code></li>
+    <li>Kamera adı verin (ör. <code>Telefon Kamerası</code>)</li>
+    <li><strong>Ekle</strong> butonuna basın</li>
+  </ol>
+  <p>Başarılıysa:</p>
+  <ul>
+    <li>Durum: <code>active</code></li>
+    <li>Dashboard'da canlı MJPEG görüntüsü görünür</li>
+  </ul>
+  <p>Hata alırsanız: telefon IP'si değişmiş veya IP Webcam kapalı olabilir — Adım 7'yi tekrarlayın.</p>
+</div>
+
+<div class="step">
+  <div class="step-num">Adım 9 — Canlı yayını izleyin</div>
+  <p>Dashboard'da kamera kartının altında canlı görüntü akar.</p>
+  <p>Arka planda şu olur:</p>
+  <pre>Telefon → go2rtc → API proxy → Mobil uygulama</pre>
+  <p>Tarayıcıdan da test edebilirsiniz: Swagger'da <code>POST .../stream-token</code> ile alınan
+  <code>mjpeg_url</code> adresini tarayıcıda açın.</p>
+</div>
+
+<div class="page-break"></div>
+
+<h2>Bölüm E — Güvenlik Alarmı</h2>
+
+<div class="step">
+  <div class="step-num">Adım 10 — MQTT alarm ayarını yapın</div>
+  <p>Dashboard'da <strong>Güvenlik Alarmı</strong> panelinde:</p>
+  <table>
+    <tr><th>Ayar</th><th>Değer</th></tr>
+    <tr><td>MQTT Host</td><td>PC'nin yerel IP'si (Adım 3'teki) — <strong>localhost değil</strong></td></tr>
+    <tr><td>Kişi algılanınca alarm</td><td>Açık</td></tr>
+  </table>
+  <p>Emülatör kullanıyorsanız MQTT Host: <code>10.0.2.2</code></p>
+  <p>Bağlantı başarılıysa logda görürsünüz:</p>
+  <pre>MQTT alarm bağlantısı aktif (192.168.x.x:1884)</pre>
+  <p>Kullanıcı adı ve şifre API'den otomatik alınır; elle girmenize gerek yok.</p>
+</div>
+
+<div class="step">
+  <div class="step-num">Adım 11 — Alarmı test edin</div>
+  <ol>
+    <li>Frigate çalışıyor mu kontrol edin: http://localhost:5000</li>
+    <li>Kameranın önüne geçin / hareket edin</li>
+    <li>Mobilde panel kırmızıya döner</li>
+    <li>Alarm sesi çalar</li>
+    <li><strong>Alarmı Sustur</strong> ile kapatabilirsiniz</li>
+  </ol>
+  <p>Algılama akışı:</p>
+  <pre>Kamera → Frigate (kişi) → MQTT → Mobil uygulama → ALARM</pre>
+</div>
+
+<div class="tip">
+  <strong>Push bildirim (opsiyonel):</strong> Uygulama kapalıyken de alarm istiyorsanız Firebase kurulumu gerekir.
+  Detay: <code>bulutsıstem/fcm/README.md</code>. Günlük kullanımda uygulama açıkken MQTT alarm yeterlidir.
+</div>
+
+<h2>Bölüm F — Ev Cihazları ve Otomasyon</h2>
+
+<div class="step">
+  <div class="step-num">Adım 12 — Cihazları kontrol edin</div>
+  <p>Dashboard'da <strong>Cihazlar</strong> bölümünde kayıtta oluşan 4 cihazı görürsünüz:</p>
+  <table>
+    <tr><th>Cihaz</th><th>Oda</th></tr>
+    <tr><td>Ana Lamba</td><td>salon</td></tr>
+    <tr><td>TV Priz</td><td>salon</td></tr>
+    <tr><td>Tavan Lambası</td><td>yatakodasi</td></tr>
+    <tr><td>Kahve Makinesi</td><td>mutfak</td></tr>
+  </table>
+  <p>Anahtarları açıp kapatın. Her değişiklik MQTT üzerinden gönderilir.</p>
+  <p><em>Not: Gerçek akıllı priz/lamba bağlı değilse komut gider ama fiziksel cihaz tepki vermez — bu normaldir.</em></p>
+</div>
+
+<div class="step">
+  <div class="step-num">Adım 13 — Senaryoları kullanın</div>
+  <table>
+    <tr><th>Buton</th><th>Ne yapar?</th></tr>
+    <tr><td>Eve Dönüş</td><td>Ev modunu açar (master kontrol = 1)</td></tr>
+    <tr><td>Evden Çıkış</td><td>Ev modunu kapatır (master kontrol = 0)</td></tr>
+    <tr><td>Kişisel Zaman</td><td>Belirlediğiniz saat aralığını sisteme gönderir</td></tr>
+  </table>
+</div>
+
+<div class="step">
+  <div class="step-num">Adım 14 — Kamera silme</div>
+  <p>Artık kullanmadığınız kamerayı Dashboard'daki <strong>Sil</strong> butonu ile kaldırabilirsiniz.</p>
+</div>
+
+<div class="page-break"></div>
+
+<h2>Bölüm G — Günlük Kullanım Rutini</h2>
+
+<p>Her gün sistemi kullanmak için:</p>
+<ol>
+  <li>PC'yi açın</li>
+  <li><code>cd bulutsıstem && docker-compose up -d</code> (zaten çalışıyorsa gerek yok)</li>
+  <li>Telefonda IP Webcam'i başlatın</li>
+  <li>Mobil uygulamayı açın → otomatik giriş (token kayıtlıysa)</li>
+  <li>MQTT Host'un doğru olduğunu kontrol edin</li>
+  <li>Kullanmaya başlayın</li>
+</ol>
+
+<p>Kapatmak için:</p>
+<pre>cd /home/yasir/görüntüproje/bulutsıstem
+docker-compose down</pre>
+
+<h2>Bölüm H — Sık Karşılaşılan Sorunlar</h2>
+
+<table>
+  <tr><th>Sorun</th><th>Çözüm</th></tr>
+  <tr><td>Kayıt 409 hatası</td><td>E-posta zaten kayıtlı — farklı e-posta veya giriş yapın</td></tr>
+  <tr><td>Kamera görünmüyor</td><td>IP Webcam açık mı? Aynı WiFi mi? IP doğru mu?</td></tr>
+  <tr><td>MQTT bağlı değil</td><td>MQTT Host = PC IP (localhost değil); docker-compose ps ile mqtt çalışıyor mu?</td></tr>
+  <tr><td>Alarm çalmıyor</td><td>Güvenlik alarmı açık mı? Frigate ayakta mı? (localhost:5000)</td></tr>
+  <tr><td>Emülatör API'ye bağlanamıyor</td><td>API: 10.0.2.2:8000, MQTT: 10.0.2.2</td></tr>
+  <tr><td>Frigate açılmıyor</td><td>HYDRA kapalı mı? (port 5000 çakışması)</td></tr>
+  <tr><td>3 kameradan fazla ekleyemiyorum</td><td>Free plan limiti — mevcut kamerayı silin</td></tr>
+</table>
+
+<h2>Bölüm I — Adminer ile Verilerinizi Görme (İsteğe bağlı)</h2>
+
+<div class="step">
+  <div class="step-num">Adım 15 — Veritabanı tarayıcı</div>
+  <p>Tarayıcıda: http://localhost:8085</p>
+  <table>
+    <tr><th>Alan</th><th>Değer</th></tr>
+    <tr><td>System</td><td>PostgreSQL</td></tr>
+    <tr><td>Server</td><td>db</td></tr>
+    <tr><td>Username</td><td>bulut</td></tr>
+    <tr><td>Password</td><td>bulut_secret</td></tr>
+    <tr><td>Database</td><td>bulutsistem</td></tr>
+  </table>
+  <p>Tablolar: <code>users</code> (hesabınız), <code>tenants</code> (eviniz), <code>cameras</code>, <code>devices</code>, <code>detection_events</code></p>
+</div>
+
+<h2>Hızlı Kontrol Listesi</h2>
+
+<ul class="checklist">
+  <li>docker-compose up -d çalıştırdım</li>
+  <li>health endpoint "ok" döndü</li>
+  <li>PC IP adresimi not aldım</li>
+  <li>Mobil uygulamada kayıt oldum</li>
+  <li>IP Webcam telefonda açık</li>
+  <li>Kamerayı ekledim — canlı görüntü geliyor</li>
+  <li>MQTT Host = PC IP ayarladım</li>
+  <li>Alarm test ettim — çalışıyor</li>
+  <li>Cihazları ve senaryoları denedim</li>
+</ul>
+
+<h2>Plan Limitleri (Free)</h2>
+<table>
+  <tr><th>Öğe</th><th>Limit</th></tr>
+  <tr><td>Kamera</td><td>3 adet</td></tr>
+  <tr><td>Cihaz</td><td>10 adet</td></tr>
+</table>
+
+<div class="footer-note">
+  BulutSistem Sıradan Kullanıcı Rehberi — 12 Haziran 2026<br>
+  /home/yasir/görüntüproje/bulutsistem_kullanici_rehberi.pdf
+</div>
+
+</body>
+</html>

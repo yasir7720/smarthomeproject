@@ -1,0 +1,23 @@
+# BulutSistem Edge Agent — örnek yapılandırma
+# Raspberry Pi kurulumu ileride; şimdilik PC'de IP Webcam testi için kullanın.
+
+api_url: http://localhost:8000/api/v1
+
+# Adminer veya GET /tenants/{id}/edge/info ile alın
+edge_agent_key: BURAYA_EDGE_AGENT_KEY_YAPIŞTIR
+
+# IP Webcam uygulamasındaki telefon IP adresi (aynı WiFi)
+ip_webcam:
+  enabled: true
+  phone_ip: "192.168.1.105"
+  port: 8080
+  camera_name: "Telefon Kamerası"
+
+# Ev içi kamera tüneli (farklı ağdan erişim için)
+tunnel:
+  enabled: true
+
+agent_name: bulutsistem-edge-agent
+local_ip: "192.168.1.50"
+
+heartbeat_seconds: 30

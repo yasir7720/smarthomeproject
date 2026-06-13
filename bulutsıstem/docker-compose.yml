@@ -1,0 +1,126 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: bulutsistem_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bulut
+      POSTGRES_PASSWORD: bulut_secret
+      POSTGRES_DB: bulutsistem
+    ports:
+      - "5433:5432"
+    volumes:
+      - bulutsistem_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bulut -d bulutsistem"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer:4
+    container_name: bulutsistem_adminer
+    restart: unless-stopped
+    ports:
+      - "8085:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+      ADMINER_DESIGN: nette
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    build: ./backend
+    container_name: bulutsistem_api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://bulut:bulut_secret@db:5432/bulutsistem
+      JWT_SECRET: ${JWT_SECRET:-dev_secret_change_in_production}
+      JWT_ALGORITHM: HS256
+      JWT_EXPIRE_MINUTES: 1440
+      APP_NAME: BulutSistem
+      APP_ENV: development
+      API_PREFIX: /api/v1
+      GO2RTC_URL: http://host.docker.internal:1984
+      FRIGATE_CONFIG_PATH: /frigate_config/config.yml
+      FRIGATE_API_URL: http://host.docker.internal:5000
+      MQTT_HOST: mosquitto
+      MQTT_PORT: 1883
+      MQTT_SERVICE_USER: bulut_service
+      MQTT_SERVICE_PASSWORD: ${MQTT_SERVICE_PASSWORD:-dev_service_mqtt_secret}
+      MQTT_FRIGATE_USER: bulut_frigate
+      MQTT_FRIGATE_PASSWORD: ${MQTT_FRIGATE_PASSWORD:-dev_frigate_mqtt_secret}
+      MQTT_PASSWD_PATH: /mqtt_credentials/passwd
+      MQTT_ACL_PATH: /mqtt_credentials/acl
+      PUBLIC_MQTT_HOST: ${PUBLIC_MQTT_HOST:-localhost}
+      PUBLIC_MQTT_PORT: 1884
+      MQTT_TOPIC_PREFIX: t
+      PUBLIC_API_URL: http://localhost:8000
+      TUNNEL_INTERNAL_KEY: ${TUNNEL_INTERNAL_KEY:-dev_tunnel_internal_key}
+      FCM_ENABLED: ${FCM_ENABLED:-false}
+      FCM_CREDENTIALS_PATH: ${FCM_CREDENTIALS_PATH:-/app/fcm/service-account.json}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+    volumes:
+      - ./backend/app:/app/app
+      - ./frigate/config:/frigate_config
+      - ./mosquitto/credentials:/mqtt_credentials
+      - ./fcm:/app/fcm:ro
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: bulutsistem_mqtt
+    restart: unless-stopped
+    ports:
+      - "1884:1883"
+    entrypoint: ["/bin/sh", "/mosquitto/config/entrypoint.sh"]
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/entrypoint.sh:/mosquitto/config/entrypoint.sh
+      - ./mosquitto/credentials:/mosquitto/credentials
+      - bulutsistem_mqtt_data:/mosquitto/data
+      - bulutsistem_mqtt_log:/mosquitto/log
+    depends_on:
+      api:
+        condition: service_healthy
+
+  go2rtc:
+    image: alexxit/go2rtc:latest
+    container_name: bulutsistem_go2rtc
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - ./go2rtc/go2rtc.yaml:/config/go2rtc.yaml
+    environment:
+      - TZ=Europe/Istanbul
+
+  frigate:
+    image: ghcr.io/blakeblackshear/frigate:stable
+    container_name: bulutsistem_frigate
+    restart: unless-stopped
+    privileged: true
+    shm_size: "256mb"
+    network_mode: host
+    volumes:
+      - ./frigate/config:/config
+      - ./frigate/media:/media
+      - /etc/localtime:/etc/localtime:ro
+
+volumes:
+  bulutsistem_pgdata:
+  bulutsistem_mqtt_data:
+  bulutsistem_mqtt_log:

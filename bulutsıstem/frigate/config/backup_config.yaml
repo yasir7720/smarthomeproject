@@ -1,0 +1,98 @@
+mqtt:
+  enabled: true
+  host: 127.0.0.1
+  port: 1884
+  user: bulut_frigate
+  password: dev_frigate_mqtt_secret
+cameras:
+  YMqVOoWsm7C_6gy_0yBGzg:
+    ffmpeg:
+      inputs:
+      - path: http://100.92.227.31:8080/video
+        roles:
+        - detect
+      input_args: preset-http-mjpeg-generic
+    detect:
+      enabled: true
+      width: 1280
+      height: 720
+      fps: 10
+    objects:
+      track:
+      - person
+    snapshots:
+      enabled: true
+      bounding_box: true
+  TmGIXRoGq6vcSeEE7h6dLQ:
+    ffmpeg:
+      inputs:
+      - path: http://192.168.1.105:8080/video
+        roles:
+        - detect
+      input_args: preset-http-mjpeg-generic
+    detect:
+      enabled: true
+      width: 1280
+      height: 720
+      fps: 10
+    objects:
+      track:
+      - person
+    snapshots:
+      enabled: true
+      bounding_box: true
+  tQF-2KFqxxiQsWBGIAjlGQ:
+    ffmpeg:
+      inputs:
+      - path: http://10.32.33.200:8080/video
+        roles:
+        - detect
+      input_args: preset-http-mjpeg-generic
+    detect:
+      enabled: true
+      width: 1280
+      height: 720
+      fps: 10
+    objects:
+      track:
+      - person
+    snapshots:
+      enabled: true
+      bounding_box: true
+  6uLwwfzkPJaNvzOfVxgzig:
+    ffmpeg:
+      inputs:
+      - path: http://10.32.33.200:8080/video
+        roles:
+        - detect
+      input_args: preset-http-mjpeg-generic
+    detect:
+      enabled: true
+      width: 1280
+      height: 720
+      fps: 10
+    objects:
+      track:
+      - person
+    snapshots:
+      enabled: true
+      bounding_box: true
+  vzWMZI8Qus9VFNDWXMOi-g:
+    ffmpeg:
+      inputs:
+      - path: http://192.168.1.105:8080/video
+        roles:
+        - detect
+      input_args: preset-http-mjpeg-generic
+    detect:
+      enabled: true
+      width: 1280
+      height: 720
+      fps: 10
+    objects:
+      track:
+      - person
+    snapshots:
+      enabled: true
+      bounding_box: true
+version: '0.14'

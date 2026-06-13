@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(e['domain'], e.get\\('title',''\\), e.get\\('data',{}\\).get\\('topic',''\\)\\) for e in data.get\\('data',{}\\).get\\('entries',[]\\)]\")",
+      "Bash(python3 -c ' *)",
+      "Bash(sqlite3 \"/home/yasir/görüntüproje/smarthome/n8n_data/database.sqlite\" \"SELECT id, name, active FROM workflow_entity ORDER BY id;\")",
+      "Bash(pip install *)"
+    ]
+  }
+}

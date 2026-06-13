@@ -1,0 +1,19 @@
+mqtt:
+  host: 172.25.0.10
+
+cameras:
+  telefon:
+    ffmpeg:
+      inputs:
+        - path: http://100.96.36.82:8080/video # <--- İSTEDİĞİN IP BURADA
+          roles:
+            - detect
+      input_args: -avoid_negative_ts make_zero -fflags +genpts+discardcorrupt -flags low_delay -strict experimental -analyzeduration 1000000 -probesize 1000000
+    detect:
+      enabled: true
+      width: 1280
+      height: 720
+      fps: 5
+    objects:
+      track:
+        - person

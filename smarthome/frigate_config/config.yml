@@ -1,0 +1,46 @@
+mqtt:
+  host: 172.25.0.10
+
+cameras:
+  # 1. GÖZ (KIRMIZI ALARM - TELEFON)
+  telefon_arka:
+    ffmpeg:
+      inputs:
+        - path: http://100.92.227.31:8080/video
+          roles:
+            - detect
+      # HTTP MJPEG formatı için gereken özel şifreleme anahtarı
+      input_args: preset-http-mjpeg-generic
+    detect:
+      enabled: true
+      width: 1280
+      height: 720
+      fps: 15
+    objects:
+      track:
+        - person
+    snapshots:
+      enabled: true
+      bounding_box: true
+
+  # 2. GÖZ (YEŞİL IŞIK - LENOVO LOQ)
+  pc_kamera:
+    ffmpeg:
+      inputs:
+        - path: /dev/video0
+          roles:
+            - detect
+      input_args: -f v4l2 -input_format mjpeg -video_size 1280x720
+    detect:
+      enabled: true
+      width: 1280
+      height: 720
+      fps: 15
+    objects:
+      track:
+        - person
+    snapshots:
+      enabled: true
+      bounding_box: true
+
+version: 0.17-0

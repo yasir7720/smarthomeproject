@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # 1. MOSQUITTO (Haberleşme Ağı)
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto_broker
+    restart: always
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    networks:
+      smarthome_net:
+        ipv4_address: 172.25.0.10
+
+  # 2. n8n (Otomasyon Beyni)
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n_smarthome
+    restart: always
+    ports:
+      - "5678:5678"
+    volumes:
+      - ./n8n_data:/home/node/.n8n
+    networks:
+      smarthome_net:
+        ipv4_address: 172.25.0.20
+
+  # 3. FRIGATE (Yapay Zeka Gözü)
+  frigate:
+    image: ghcr.io/blakeblackshear/frigate:stable
+    container_name: frigate
+    privileged: true
+    restart: always
+    shm_size: "256mb"
+    network_mode: "host" # Tailscale IP'sine ulaşabilmesi için kilit kırıldı!
+    devices:
+      - /dev/video0:/dev/video0 # PC Kamerasını içeri aktarır
+    volumes:
+      - ./frigate_config:/config
+      - /etc/localtime:/etc/localtime:ro
+
+# ORTAK AĞIMIZ
+networks:
+  smarthome_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.25.0.0/24
